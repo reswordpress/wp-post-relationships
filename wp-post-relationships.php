@@ -131,6 +131,7 @@ class post_relationships {
      * @return [type] [description]
      */
 	public function acf_define_fields() {
+        $child_posts_field_name = apply_filters('wp_post_relationship_field_name', 'child_posts');
         $fields = array(
             array(
                 'key' => 'field_594024c63e38e',
@@ -152,7 +153,7 @@ class post_relationships {
             array(
                 'key' => 'field_562696s96cc85',
                 'label' => 'Child Posts',
-                'name' => 'child_posts',
+                'name' => $$child_posts_field_name,
                 'type' => 'relationship',
                 'instructions' => '',
                 'required' => 0,
@@ -325,16 +326,17 @@ class post_relationships {
 	 * @param $post_IDs needs to be an array even if its just one post id.
 	 */
 	public function ajax_remove_parent_relationship(){
+        $child_posts_field_name = apply_filters('wp_post_relationship_field_name', 'child_posts');
 		if( isset( $_POST['post_id'] ) && is_numeric( $_POST['post_id'] ) ) {
 			// Get the parent post id and update that post with the child post removed.
 			$parent_post_id = $this->get_parent_post($_POST['post_id'])->ID;
 
-			$child_posts = get_field('child_posts', $parent_post_id);
+			$child_posts = get_field($child_posts_field_name, $parent_post_id);
 
 			$remove = array_search($_POST['post_id'], $child_posts);
 			unset( $child_posts[$remove] );
             // Update the child posts field on the parent post.
-			update_field('child_posts', $child_posts, $parent_post_id);
+			update_field($child_posts_field_name, $child_posts, $parent_post_id);
 
 			// Now actually unset the post_parent.
 			$updates = array(
@@ -410,12 +412,12 @@ class post_relationships {
 	public function acf_save_set_children( $parent_post_id ) {
         // The data on the post NOW, the data that was in the field when the user clicked save.
 	    $current_data = $_POST['acf']['field_562696s96cc85'];
-
+        $child_posts_field_name = apply_filters('wp_post_relationship_field_name', 'child_posts');
 	    // bail early if no ACF data
 	    if( !empty($current_data) ) {
 
 			// The data on the post PREVIOUSLY, the data has already been saved to meta.
-			$previous_data = get_field('child_posts');
+			$previous_data = get_field($child_posts_field_name);
 
 	        if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
 	            return $parent_post_id;
