@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WP Post Relationships (WPPR)
-Plugin URI: http://github.com/sethrubenstein/wp-post-relationships.php
+Plugin URI: https://github.com/sethrubenstein/wp-post-relationships/
 Description: A schema for creating post -> child post relationships. <strong>Requires Advanced Custom Fields</strong>
 Version: 1.0
 Author: Seth Rubenstein
