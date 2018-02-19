@@ -36,11 +36,6 @@ define( 'WPPR_FILE', $wppr_plugin_file );
 class post_relationships {
 
 	/**
-	 * @var $name	Variable for post_relationships used throughout the plugin
-	 */
-	protected $name = "WP Post Relationships";
-
-	/**
 	 * @var $nonce_key	A security key used internally by the plugin
 	 */
 	protected $nonce_key = '+Y|*Ec/-\s3';
@@ -70,8 +65,8 @@ class post_relationships {
 	public function __construct() {
 		register_activation_hook( WPPR_FILE, array( &$this, 'activate' ) );
 		register_deactivation_hook( WPPR_FILE, array( &$this, 'deactivate' ) );
-        add_action( 'acf/init', array($this, 'acf_define_fields') );
-        add_action( 'admin_init', array( $this, 'admin_hooks' ) );
+		add_action( 'acf/init', array($this, 'acf_define_fields') );
+		add_action( 'admin_init', array( $this, 'admin_hooks' ) );
 	}
 
 	/**
@@ -153,7 +148,7 @@ class post_relationships {
             array(
                 'key' => 'field_562696s96cc85',
                 'label' => 'Child Posts',
-                'name' => $$child_posts_field_name,
+                'name' => $child_posts_field_name,
                 'type' => 'relationship',
                 'instructions' => '',
                 'required' => 0,
