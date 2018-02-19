@@ -18,11 +18,9 @@ $wppr_plugin_file = __FILE__;
 /* Find our plugin, wherever it may live! */
 if ( isset( $plugin ) ) {
 	$wppr_plugin_file = $plugin;
-}
-else if ( isset( $mu_plugin ) ) {
+} else if ( isset( $mu_plugin ) ) {
 	$wppr_plugin_file = $mu_plugin;
-}
-else if ( isset( $network_plugin ) ) {
+} else if ( isset( $network_plugin ) ) {
 	$wppr_plugin_file = $network_plugin;
 }
 
