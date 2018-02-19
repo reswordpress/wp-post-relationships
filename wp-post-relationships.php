@@ -122,7 +122,8 @@ class post_relationships {
         add_action( 'wp_ajax_ajax_remove_parent_relationship', array($this,'ajax_remove_parent_relationship') );
 
         add_filter( 'acf/fields/relationship/query', array($this, 'acf_query_hide_current_post'), 10, 3 );
-        add_action( 'acf/save_post', array($this, 'acf_save_set_children'), 20 ); // The taxonomy fields get saved at priority 15
+        // NOTE: The taxonomy fields get saved at priority 15 so this has to fire at 20 in order to have data.
+        add_action( 'acf/save_post', array($this, 'acf_save_set_children'), 20 );
     }
 
     /**
@@ -151,7 +152,7 @@ class post_relationships {
             array(
                 'key' => 'field_562696s96cc85',
                 'label' => 'Child Posts',
-                'name' => 'multi_section_report',
+                'name' => 'child_posts',
                 'type' => 'relationship',
                 'instructions' => '',
                 'required' => 0,
@@ -326,18 +327,21 @@ class post_relationships {
 	public function ajax_remove_parent_relationship(){
 		if( isset( $_POST['post_id'] ) && is_numeric( $_POST['post_id'] ) ) {
 			// Get the parent post id and update that post with the child post removed.
-			$parent_post_ID = $this->get_parent_post($_POST['post_id'])->ID;
-			$child_posts = get_field('multi_section_report', $parent_post_ID);
+			$parent_post_id = $this->get_parent_post($_POST['post_id'])->ID;
+
+			$child_posts = get_field('child_posts', $parent_post_id);
+
 			$remove = array_search($_POST['post_id'], $child_posts);
-			unset($child_posts[$remove]);
-			update_field('multi_section_report', $child_posts, $parent_post_ID);
-			// TODO: This isn't working correctly. FIXME
+			unset( $child_posts[$remove] );
+            // Update the child posts field on the parent post.
+			update_field('child_posts', $child_posts, $parent_post_id);
+
 			// Now actually unset the post_parent.
 			$updates = array(
 				'ID' => $_POST['post_id'],
 				'post_parent' => 0
 			);
-			// Update the post into the database
+			// Update the child post into the database resetting its parent post back to itself.
 			wp_update_post( $updates );
 		}
 		die();
@@ -348,8 +352,7 @@ class post_relationships {
      * @param [type] $parent_post_id [description]
      * @param [type] $child_posts    [description]
      */
-    public function set_children( $parent_post_id, $child_posts ) {
-	    // bail early if no ACF data
+    public function set_children( $parent_post_id, $child_posts = array() ) {
 	    if( !empty($parent_post_id) && !empty($child_posts) ) {
 			// Get Parent Post Information
 			$taxonomies = get_taxonomies();
@@ -405,13 +408,14 @@ class post_relationships {
 	 * @param $parent_post_id
 	 */
 	public function acf_save_set_children( $parent_post_id ) {
-	    $current_data = $_POST['acf']['field_562696s96cc85']; // The data on the post NOW, the data that was in the field.
+        // The data on the post NOW, the data that was in the field when the user clicked save.
+	    $current_data = $_POST['acf']['field_562696s96cc85'];
 
 	    // bail early if no ACF data
 	    if( !empty($current_data) ) {
 
 			// The data on the post PREVIOUSLY, the data has already been saved to meta.
-			$previous_data = get_field('multi_section_report');
+			$previous_data = get_field('child_posts');
 
 	        if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
 	            return $parent_post_id;
