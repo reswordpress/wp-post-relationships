@@ -2,7 +2,7 @@
 
 A schema for creating post -> child post relationships. *Requires Advanced Custom Fields*.
 
-To use just drop in to either `wp-content/plugins` or `wp-contnet/mu-plugins`.
+To use just drop in to either `wp-content/plugins` or `wp-content/mu-plugins`.
 
 ## Filters
 `wp_post_relationship_fields` lets you change or add to the fields under the Post Relationships meta box.
