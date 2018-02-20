@@ -227,15 +227,16 @@ class post_relationships {
 	}
 
 	/**
-	 * Modify the main query and hide posts that are children.
+	 * Modify the main archives query, the category archives query, and the author archives query to only show parent posts.
 	 * @param $query
 	 * @return modified WP_Query with post_parent set to 0.
+	 * TODO: to be honest this could be better strucutred and account for more possibilities. Also a filter to decide which queryies to interface with would be good.
 	 */
 	public function query_hide_children($query) {
 		if ( is_admin() || !$query->is_main_query() ) {
 			return;
 		}
-		if ( is_category() || is_author() ) {
+		if ( $query->is_archive() && $query->is_main_query() || is_category() || is_author() ) {
 			$query->set( 'post_parent', 0 );
 			return;
 		}
@@ -391,7 +392,7 @@ class post_relationships {
 
 	/**
 	 * It'd be crazy to set the post you're currently on as a child of it self. So to prevent this from happening we wont show the current post in the post relationship field. This will apply to all relationship field types because why would you ever select yourself.
-	 * NOTE This is a broader filter that effects all relationship fields.
+	 * NOTE This is a broader filter that effects all ACF relationship fields.
 	 */
 	public function acf_query_hide_current_post( $args, $field, $post ) {
 	    $args['post__not_in'] = array($post);
