@@ -1,0 +1,19 @@
+{
+	"name": "sethrubenstein/wp-post-relationships",
+	"description": "WordPress Plugin description",
+	"keywords": ["wordpress", "plugin", "sethrubenstein"],
+	"homepage": "https://github.com/sethrubenstein/wp-post-relationships/",
+	"license": "GPL",
+	"authors": [
+		{
+		"name": "Seth Rubenstein",
+		"email": "smrubenstein@gmail.com",
+		"homepage": "https://sethrubenstein.info"
+		}
+	],
+	"type": "wordpress-plugin",
+	"require": {
+		"php": ">=7.0.0",
+		"composer/installers": "v1.0.6"
+	}
+}
